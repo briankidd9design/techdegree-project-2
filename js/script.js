@@ -4,11 +4,9 @@ FSJS project 2 - List Filter and Pagination
 ******************************************/
 // Add variables that store DOM elements you will need to reference and/or manipulate
 //this creates an object with all the students in the list
-/* const studentListUL = document.querySelectorAll('student-list li');
-console.log(studentListUL); */
+const pageHeader = document.querySelector(".page-header");
 const allStudents = document.getElementsByClassName("student-item");
 const totalStudents = document.getElementsByClassName("student-item").length;
-const pageHeader = document.querySelector(".page-header");
 //document.getElementsByClassName(".student-list")[0].style.display = 'none';
 /***Setting Up the Search Input Field and also Search Button**/
 const searchInputField = document.createElement("div");
@@ -64,14 +62,11 @@ const appendPageLinks = (studentList) => {
 	pageLinksDiv.className = 'pagination'; 
 	pageDiv.appendChild(pageLinksDiv);
 //this creates the unorderd list of students to show per page
-//const pageLinksUL = document.createElement('ul');
 	pageLinksUL.className = 'pagination-ul';
   //this appends the page links div with its class of pagination-ul to the pageLinksUL
 	pageLinksDiv.appendChild(pageLinksUL);
-
 	let paginationDiv = document.querySelector('.pagination'); //ok
 	let inactive = paginationDiv.getElementsByClassName('inactive'); //ok
-  //let active = document.querySelector(".active");
 	const active = paginationDiv.querySelectorAll('a');
 	active.className = 'active';	
 	
@@ -81,7 +76,6 @@ const appendPageLinks = (studentList) => {
 	let totalPages = Math.ceil(studentList.length / 10);
 //this loop appends the pagination links adding the correct number taking into account the studentsList/10
 	for (let j = 1; j <= totalPages; j++) {
-	 // console.log(j); 
 		let pageLinkLI = document.createElement('li');//
 		pageLinkLI.className = 'pagination-li';
 		pageLinkLI.style.marginRight = '0.5em';
@@ -150,16 +144,20 @@ searchStudentButton.addEventListener("click", () => {
 	let userInput = inputBox.value.toLowerCase();
 	showSearchResults(allStudents, userInput, inputBox);
 }); 
-	
+//a function to display no students that is used for no search results	
 const studentsDisplayNone = function(){
 	let studentListClass = document.querySelectorAll('.student-list');
 	for(let i = 0; i < studentListClass.length; i++){
 		studentListClass[i].style.display = 'none';
 	}
-	
 }	
-	
-	
+//a function to diplay no appendPageLink that is used for no search results
+const appendPageDisplayNone = function(){
+	let paginationLinks = document.querySelectorAll('.pagination-ul');
+	for(let i = 0; i < paginationLinks.length; i++){
+		paginationLinks[i].style.display = 'none';
+	}
+}
 	
 function showSearchResults(studentList, userTextInput, inputTextBox) {//compare the list of students to the userInput
 	let duplicatePaginationList = document.querySelector(".pagination-ul");
@@ -175,27 +173,26 @@ function showSearchResults(studentList, userTextInput, inputTextBox) {//compare 
 	
 		 //this changes the inputText from Search student list to No results for userInputText
 		 inputTextBox.placeholder = "No results for " + userTextInput;
-		 console.log("student list " + studentList);
 		 //if the user clicks in the inputbox then the page reloads 
 		 inputTextBox.addEventListener("click", () =>{
 			 document.location.reload(true, showPage, studentList, 1);
 		 });
-		 //after now search results the page will reload after 5 seconds
-		//let duplicatePaginationList = document.querySelector(".pagination-ul");
+		
 		studentsDisplayNone();
-		duplicatePaginationList.style.display = "none";
-		 
-	setTimeout(
+		appendPageDisplayNone();
+		
+	//search results the page will reload after 1 second
+	 setTimeout(
 	function() {
 	location.reload() },
-	1000 ); 
+	1000 );  
 	 } else {
 		  for (let i = 0; i < studentList.length; i+=1){
 			 studentList[i].style.display = "none";
 		 } 
 		 showPage(matchesFoundArray, 1);
 		//remove the pagination pages if they already exist after a search result is shown	
-		//let duplicatePaginationList = document.querySelector(".pagination-ul");
+		let duplicatePaginationList = document.querySelector(".pagination-ul");
 	
 		if(duplicatePaginationList!== null) {
 			duplicatePaginationList.parentNode.removeChild(duplicatePaginationList);
